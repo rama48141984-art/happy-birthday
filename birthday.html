@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! 🧸❤️</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffe5ec, #ffc2d1, #f9bec7);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Floating Teddy Bears Backdrop (Page 1) --- */
+        .bear-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .floating-bear {
+            position: absolute;
+            bottom: -100px;
+            font-size: 2.5rem;
+            animation: floatUp 8s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- Card Styles --- */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(251, 111, 146, 0.35);
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+            z-index: 10;
+            transition: all 0.5s ease-in-out;
+            border: 4px solid #ffb3c6;
+        }
+
+        h1 {
+            color: #ff4d6d;
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+
+        p {
+            color: #4a4a4a;
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .lovely-text {
+            font-size: 1.2rem;
+            color: #c9184a;
+            font-weight: 500;
+        }
+
+        .main-bear {
+            font-size: 5.5rem;
+            display: block;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.05); }
+        }
+
+        /* --- Buttons --- */
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.9rem 2.2rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 12px rgba(255, 77, 109, 0.2);
+        }
+
+        .btn-yes {
+            background-color: #ff4d6d;
+            color: white;
+        }
+
+        .btn-yes:hover {
+            background-color: #ff758f;
+            transform: scale(1.1);
+        }
+
+        .btn-no {
+            background-color: #fff0f3;
+            color: #ff758f;
+            border: 2px solid #ffb3c6;
+        }
+
+        .btn-no:hover {
+            transform: scale(0.9) rotate(-5deg);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* --- Confetti & Heart FX --- */
+        .confetti, .heart-fx {
+            position: absolute;
+            top: -20px;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .confetti {
+            width: 10px;
+            height: 10px;
+            animation: rainDown 4s linear infinite;
+        }
+
+        .heart-fx {
+            font-size: 1.5rem;
+            animation: rainDown 4.5s linear infinite;
+        }
+
+        @keyframes rainDown {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(105vh) rotate(540deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Floating Bears & Decor -->
+    <div class="bear-container" id="bearContainer"></div>
+
+    <!-- PAGE 1: The Question -->
+    <div class="card" id="page1">
+        <span class="main-bear">🧸</span>
+        <h1>Hey Birthday Cutie! ✨</h1>
+        <p>A little bird told me today is extra special... <br><b>Do you want to see your birthday present?</b></p>
+        <div class="btn-container">
+            <button class="btn btn-yes" onclick="revealPresent()">Yes, please! 😍</button>
+            <button class="btn btn-no" id="noBtn" onmouseover="moveNoButton()">No 😢</button>
+        </div>
+    </div>
+
+    <!-- PAGE 2: The Grand Reveal & Lovely Message -->
+    <div class="card hidden" id="page2">
+        <span class="main-bear">🧸💖🎁</span>
+        <h1>HAPPY BIRTHDAY!</h1>
+        <p class="lovely-text">
+            To someone incredibly special, beautiful, and sweet: May your day be just as wonderful and bright as your smile. 
+            <br><br>
+            You bring so much joy, love, and warmth into the world—just like a giant teddy bear hug. Sending you endless love, all the happiness in the universe, and a million hearts today! Happy Birthday! 🎉✨
+        </p>
+        <div class="btn-container">
+            <button class="btn btn-yes" onclick="resetPage()">See Again ❤️</button>
+        </div>
+    </div>
+
+    <script>
+        // Background elements for Page 1
+        const bearContainer = document.getElementById('bearContainer');
+        const bearTypes = ['🧸', '🎈', '✨', '💕', '🧸'];
+
+        function createFloatingBears() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const bear = document.createElement('div');
+                    bear.classList.add('floating-bear');
+                    bear.innerText = bearTypes[Math.floor(Math.random() * bearTypes.length)];
+                    bear.style.left = Math.random() * 100 + 'vw';
+                    bear.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                    bear.style.fontSize = (Math.random() * 1.2 + 1.5) + 'rem';
+                    bearContainer.appendChild(bear);
+
+                    setTimeout(() => { bear.remove(); }, 10000);
+                }, i * 400);
+            }
+        }
+        
+        createFloatingBears();
+        setInterval(createFloatingBears, 9000);
+
+        // Transition into the celebration page
+        function revealPresent() {
+            document.getElementById('page1').classList.add('hidden');
+            document.getElementById('page2').classList.remove('hidden');
+            triggerCelebrationEffects();
+        }
+
+        // Playful escape mechanic for "No" button
+        function moveNoButton() {
+            const noBtn = document.getElementById('noBtn');
+            noBtn.style.position = 'relative';
+            const randomX = (Math.random() - 0.5) * 40;
+            const randomY = (Math.random() - 0.5) * 40;
+            noBtn.style.transform = `translate(${randomX}px, ${randomY}px) scale(0.85)`;
+        }
+
+        // Combined Confetti + Multi-Colored Hearts Generation
+        function triggerCelebrationEffects() {
+            const colors = ['#ff4d6d', '#ff758f', '#ffb3c6', '#fff0f3', '#ffccd5', '#ff8fa3'];
+            const hearts = ['❤️', '💖', '💝', '💕', '💘'];
+
+            // 1. Generate Confetti Rain
+            for(let i = 0; i < 80; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                confetti.style.width = Math.random() * 8 + 6 + 'px';
+                confetti.style.height = confetti.style.width;
+                document.body.appendChild(confetti);
+            }
+
+            // 2. Generate Heart Rain
+            for(let j = 0; j < 60; j++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart-fx');
+                heart.innerText = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 2.5 + 2) + 's';
+                heart.style.animationDelay = Math.random() * 3 + 's';
+                heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+                document.body.appendChild(heart);
+            }
+        }
+
+        // Clean slate reset
+        function resetPage() {
+            const elements = document.querySelectorAll('.confetti, .heart-fx');
+            elements.forEach(el => el.remove());
+            
+            document.getElementById('page2').classList.add('hidden');
+            const noBtn = document.getElementById('noBtn');
+            noBtn.style.transform = 'none';
+            document.getElementById('page1').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
